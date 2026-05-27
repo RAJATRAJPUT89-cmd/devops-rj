@@ -1,0 +1,19 @@
+  
+      name: CI pipeline
+
+
+       on:
+        push:
+          branches:[main]
+
+        jobs:
+         build:
+            runs-on: ubuntu-latest
+
+           steps:
+             - name: chechout code
+
+                uses: actions/chekout@v4
+
+             - name: Build Docker imsge
+                run: docker build -t deveops-app .
