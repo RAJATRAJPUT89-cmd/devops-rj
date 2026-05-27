@@ -1,31 +1,13 @@
-name: CD Pipeline
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to Ubuntu Server via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            if [ ! -d "devops-rj" ]; then
-              git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git
-            fi
-
+- name: Deploy to Server
+        run: |
+          if [ ! -d "devops-rj" ]; then
+            git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git
+            cd devops-rj
+          else
             cd devops-rj
             git pull
-
-            docker build -t my-site .
-
-            docker stop my-site || true
-            docker rm my-site || true
-
-            docker run -d -p 8080:80 --name my-site my-site
+          fi
+          docker build -t my-site .
+          docker stop my-site || true
+          docker rm my-site || true
+          docker run -d --name my-site -p 80:80 my-site
