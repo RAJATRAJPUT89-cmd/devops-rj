@@ -1,13 +1,35 @@
-- name: Deploy to Server
-        run: |
-          if [ ! -d "devops-rj" ]; then
-            git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git
-            cd devops-rj
-          else
+name: CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Starting deployment..."
+
+            if [ ! -d "devops-rj" ]; then
+              git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git
+            fi
+
             cd devops-rj
             git pull
-          fi
-          docker build -t my-site .
-          docker stop my-site || true
-          docker rm my-site || true
-          docker run -d --name my-site -p 80:80 my-site
+
+            docker build -t my-site .
+
+            docker stop my-site || true
+            docker rm my-site || true
+
+            docker run -d -p 8080:80 --name my-site my-site
+
+            echo "Deployment completed!"
