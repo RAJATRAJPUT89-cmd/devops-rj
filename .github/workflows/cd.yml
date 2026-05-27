@@ -16,10 +16,16 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            if [ ! -d "devops-project" ]; then
-              git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git devops-project
-            cd devops-project
+            if [ ! -d "devops-rj" ]; then
+              git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git
+            fi
+
+            cd devops-rj
+            git pull
+
             docker build -t my-site .
+
             docker stop my-site || true
             docker rm my-site || true
+
             docker run -d -p 8080:80 --name my-site my-site
