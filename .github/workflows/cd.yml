@@ -1,4 +1,4 @@
-name: Test CD
+name: CD Pipeline
 
 on:
   push:
@@ -6,9 +6,17 @@ on:
       - main
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test Workflow
-        run: echo "CD is working"
+      - name: SSH Test
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "SSH connection successful"
+            hostname
+            pwd
