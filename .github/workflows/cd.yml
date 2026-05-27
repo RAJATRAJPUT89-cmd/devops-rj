@@ -18,9 +18,7 @@ jobs:
           script: |
             if [ ! -d "devops-project" ]; then
               git clone https://github.com/RAJATRAJPUT89-cmd/devops-rj.git devops-project
-            fi
             cd devops-project
-            git pull
             docker build -t my-site .
             docker stop my-site || true
             docker rm my-site || true
